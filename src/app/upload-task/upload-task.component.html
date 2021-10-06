@@ -1,0 +1,80 @@
+<!-- <div *ngIf="percentage | async as pct">
+  {{ pct | number }}%
+</div> -->
+<!-- <progress [value]="pct" max="100"></progress> -->
+
+<div *ngIf="snapshot | async as snap">
+  <!-- <div>
+    {{ snap.bytesTransferred / 1024 | number: "1.0-1" }} of
+    {{ snap.totalBytes / 1024 | number: "1.0-1" }} KB, {{ file.name }}
+  </div> -->
+  <nz-table [nzData]="file" *ngIf="file">
+    <thead *ngIf="length == 0">
+      <tr>
+        <th>S.no</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Size</th>
+        <th>Progress</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="file as data">
+      <tr>
+        <td>{{ length + 1 }}</td>
+        <td>{{ data.name }}</td>
+        <td>{{ data.type }}</td>
+        <td>{{ snap.totalBytes / 1024 | number: "1.0-1" }} KB</td>
+        <td>
+          <nz-progress
+            *ngIf="percentage | async as pct"
+            [nzPercent]="pct"
+            nzType="circle"
+            [nzWidth]="80"
+          ></nz-progress>
+        </td>
+        <td>
+          <button (click)="task.pause()" [disabled]="!isActive(snap)">
+            Pause
+          </button>
+          <button (click)="task.cancel()" [disabled]="!isActive(snap)">
+            Cancel
+          </button>
+          <button
+            (click)="task.resume()"
+            [disabled]="!(snap?.state === 'paused')"
+          >
+            Resume
+          </button>
+          <nz-divider nzType="vertical"></nz-divider>
+
+          <!-- (click)="onClick()" -->
+          <!-- (click)="onClick(downloadURL)" -->
+          <button
+            nz-button
+            nzType="primary"
+            *ngIf="downloadURL"
+            [nzType]="'primary'"
+            (click)="showModal()"
+          >
+            Preview
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzTitle="The first Modal"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+>
+  <ng-container *nzModalContent>
+    <iframe
+      src="https://firebasestorage.googleapis.com/v0/b/app-drag-and-drop.appspot.com/o/uploads%2F1633546218550_e73a70b5adc9430dbd3ae5f52743c26b.pdf?alt=media&token=7f57e2c2-ac68-4400-8536-43a09c87045b"
+      title="W3Schools Free Online Web Tutorials"
+    ></iframe>
+  </ng-container>
+</nz-modal>

@@ -1,0 +1,43 @@
+<div
+  class="dropzone"
+  dropzone
+  (hovered)="toggleHover($event)"
+  (dropped)="onDrop($event)"
+  [class.hovering]="isHovering"
+>
+  <h3>Drag & Drop files here</h3>
+  <p class="ant-upload-drag-icon">
+    <i nz-icon nzType="inbox"></i>
+  </p>
+  <div>
+    <label>
+      <input type="file" (change)="onDrop($event.target.files)" />
+    </label>
+  </div>
+</div>
+<nz-checkbox-wrapper style="width: 100%" (nzOnChange)="log($event)">
+  <div nz-row>
+    <div nz-col nzSpan="8">
+      <label nz-checkbox nzValue="jpg" [ngModel]="true">Jpg</label>
+    </div>
+    <div nz-col nzSpan="8"><label nz-checkbox nzValue="png">Png</label></div>
+    <div nz-col nzSpan="8"><label nz-checkbox nzValue="jpeg">Jpeg</label></div>
+    <div nz-col nzSpan="8"><label nz-checkbox nzValue="xlsx">Excel</label></div>
+    <div nz-col nzSpan="8"><label nz-checkbox nzValue="pdf">Pdf</label></div>
+  </div>
+</nz-checkbox-wrapper>
+<nz-slider
+  nzRange
+  [nzStep]="10"
+  [(ngModel)]="rangeValue"
+  (ngModelChange)="onChange($event)"
+  (nzOnAfterChange)="onAfterChange($event)"
+></nz-slider>
+
+<div *ngIf="files.length > 0">
+  Uploads
+  <div *ngFor="let files of files; index as i">
+    <upload-task [file]="files" [length]="i"></upload-task>
+  </div>
+  <hr />
+</div>
