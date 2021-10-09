@@ -1,8 +1,13 @@
+/* display: flex; */
+.navClass {
+  display: flex;
+  justify-content: center;
+  background-color: rgb(153, 205, 218);
+}
 .container {
-    display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	justify-content: center;
-	align-items: center;
-	align-content: stretch;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  align-content: stretch;
 }

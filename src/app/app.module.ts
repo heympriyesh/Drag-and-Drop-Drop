@@ -34,6 +34,8 @@ import { NzSliderModule } from "ng-zorro-antd/slider";
 import { NzFormModule } from "ng-zorro-antd/form";
 import { NzModalModule } from "ng-zorro-antd/modal";
 import { NzSpinModule } from "ng-zorro-antd/spin";
+import { NzPageHeaderModule } from "ng-zorro-antd/page-header";
+import { ListComponent } from './list/list.component';
 
 registerLocaleData(en);
 let AntDesign = [
@@ -49,6 +51,7 @@ let AntDesign = [
   NzFormModule,
   NzModalModule,
   NzSpinModule,
+  NzPageHeaderModule,
 ];
 @NgModule({
   declarations: [
@@ -57,6 +60,7 @@ let AntDesign = [
     UploadManagerComponent,
     UploadTaskComponent,
     DropzoneDirective,
+    ListComponent,
   ],
   imports: [
     BrowserModule,

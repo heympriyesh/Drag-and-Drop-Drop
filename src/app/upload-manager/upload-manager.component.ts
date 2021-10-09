@@ -6,12 +6,17 @@ import {
   FormControl,
   Validators,
 } from "@angular/forms";
+import { AngularFirestore } from "@angular/fire/firestore";
+import { Observable } from "rxjs";
+
 @Component({
   selector: "upload-manager",
   templateUrl: "./upload-manager.component.html",
   styleUrls: ["./upload-manager.component.css"],
 })
 export class UploadManagerComponent implements OnInit {
+  public aufgaben: Observable<any>[];
+
   isHovering: boolean;
   files: File[] = [];
   form: FormGroup;
@@ -23,22 +28,26 @@ export class UploadManagerComponent implements OnInit {
   constructor(
     private message: NzMessageService,
     private fb: FormBuilder,
-    private ren: Renderer2
+    private ren: Renderer2,
+    public fireservices: AngularFirestore
   ) {}
-
+  FileUploadList;
   ngOnInit(): void {
+    this.fireservices
+      .collection("files")
+      .snapshotChanges()
+      .subscribe((data: any) => {
+        this.FileUploadList = data.map((e) => {
+          return {
+            id: e.payload.doc.id,
+            downloadURL: e.payload.doc.data()["downloadURL"],
+            name: e.payload.doc.data()["originalName"],
+          };
+        });
+        // console.log("Val", this.employee);
+      });
     this.value = this.rangeValue;
     this.setForm();
-    // let iframe = document.getElementById("iframe");
-    // console.log(
-    //   "🚀 ~ file: upload-manager.component.ts ~ line 32 ~ UploadManagerComponent ~ ngOnInit ~ iframe",
-    //   iframe
-    // );
-    // this.ren.setProperty(
-    //   iframe,
-    //   "src",
-    //   "https://firebasestorage.googleapis.com/v0/b/app-drag-and-drop.appspot.com/o/uploads%2F1633618750304_e73a70b5adc9430dbd3ae5f52743c26b.pdf?alt=media&token=07e49c4d-56a0-4292-b4f4-9128a1cefeb1"
-    // );
   }
   setForm() {
     this.form = this.fb.group({
@@ -53,7 +62,7 @@ export class UploadManagerComponent implements OnInit {
     { label: "PDF", value: "pdf" },
     { lable: "EXCEL", value: "xlsx" },
   ];
-  public rangeValue = [5, 50];
+  public rangeValue = [0, 10];
 
   onChange(value: number): void {
     console.log(`onChange: ${value}`);

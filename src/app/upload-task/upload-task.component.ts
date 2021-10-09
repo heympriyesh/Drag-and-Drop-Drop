@@ -90,14 +90,7 @@ export class UploadTaskComponent implements OnInit {
     }, 500);
   }
 
-  // handleOk(): void {
-  //   console.log("Button ok clicked!");
-  //   this.isVisible = false;
-  //   this.src = "";
-  // }
-
   handleCancel(): void {
-    console.log("Button cancel clicked!");
     this.isVisible = false;
     this.loading = true;
     this.src = "";
