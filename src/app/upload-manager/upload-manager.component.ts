@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Renderer2 } from "@angular/core";
 import { NzMessageService } from "ng-zorro-antd/message";
 import {
   FormGroup,
@@ -18,12 +18,27 @@ export class UploadManagerComponent implements OnInit {
   public fileType = ["jpg"];
   public value: any;
   public bytetomb: number = 1048576;
-  public len:number=1;
-  constructor(private message: NzMessageService, private fb: FormBuilder) {}
+  public len: number = 1;
+  public visible = false;
+  constructor(
+    private message: NzMessageService,
+    private fb: FormBuilder,
+    private ren: Renderer2
+  ) {}
 
   ngOnInit(): void {
     this.value = this.rangeValue;
     this.setForm();
+    // let iframe = document.getElementById("iframe");
+    // console.log(
+    //   "🚀 ~ file: upload-manager.component.ts ~ line 32 ~ UploadManagerComponent ~ ngOnInit ~ iframe",
+    //   iframe
+    // );
+    // this.ren.setProperty(
+    //   iframe,
+    //   "src",
+    //   "https://firebasestorage.googleapis.com/v0/b/app-drag-and-drop.appspot.com/o/uploads%2F1633618750304_e73a70b5adc9430dbd3ae5f52743c26b.pdf?alt=media&token=07e49c4d-56a0-4292-b4f4-9128a1cefeb1"
+    // );
   }
   setForm() {
     this.form = this.fb.group({
@@ -66,20 +81,13 @@ export class UploadManagerComponent implements OnInit {
 
   onDrop(files: FileList) {
     console.log("The files details on drop", files, this.value);
-    let small = this.value[0] ? this.value[0] : 1;
+    let small = this.value[0];
     let large = this.value[1];
     console.log("small", small, "large", large);
     for (let i = 0; i < files.length; i++) {
       let prop = files.item(i).name.split(".").pop();
       let size = files.item(i).size;
-      console.log(
-        "🚀 ~ file: upload-manager.component.ts ~ line 74 ~ UploadManagerComponent ~ onDrop ~ size",
-        size
-      );
       if (this.fileType.includes(prop)) {
-        if (small == 0) {
-          small = 1;
-        }
         if (
           +size >= +small * this.bytetomb &&
           +size <= +this.bytetomb * large

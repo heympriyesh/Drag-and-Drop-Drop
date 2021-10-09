@@ -33,6 +33,7 @@ import { NzGridModule } from "ng-zorro-antd/grid";
 import { NzSliderModule } from "ng-zorro-antd/slider";
 import { NzFormModule } from "ng-zorro-antd/form";
 import { NzModalModule } from "ng-zorro-antd/modal";
+import { NzSpinModule } from "ng-zorro-antd/spin";
 
 registerLocaleData(en);
 let AntDesign = [
@@ -47,6 +48,7 @@ let AntDesign = [
   NzSliderModule,
   NzFormModule,
   NzModalModule,
+  NzSpinModule,
 ];
 @NgModule({
   declarations: [

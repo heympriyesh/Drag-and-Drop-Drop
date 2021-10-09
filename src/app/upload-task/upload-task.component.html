@@ -17,6 +17,7 @@
         <th>Size</th>
         <th>Progress</th>
         <th>Action</th>
+        <th *ngIf="downloadURL">Preview Button</th>
       </tr>
     </thead>
     <tbody *ngIf="file as data">
@@ -50,12 +51,14 @@
 
           <!-- (click)="onClick()" -->
           <!-- (click)="onClick(downloadURL)" -->
+        </td>
+        <td>
           <button
             nz-button
             nzType="primary"
             *ngIf="downloadURL"
             [nzType]="'primary'"
-            (click)="showModal()"
+            (click)="showModal(downloadURL)"
           >
             Preview
           </button>
@@ -67,13 +70,21 @@
 
 <nz-modal
   [(nzVisible)]="isVisible"
-  nzTitle="The first Modal"
+  nzTitle="Preivew File"
+  [nzStyle]="{ top: '20px' }"
+  [nzFooter]="null"
   (nzOnCancel)="handleCancel()"
-  (nzOnOk)="handleOk()"
 >
   <ng-container *nzModalContent>
+    <p>{{ loading }}</p>
+    <div class="example" *ngIf="loading">
+      <nz-spin nzSimple></nz-spin>
+    </div>
     <iframe
-      src="https://firebasestorage.googleapis.com/v0/b/app-drag-and-drop.appspot.com/o/uploads%2F1633546218550_e73a70b5adc9430dbd3ae5f52743c26b.pdf?alt=media&token=7f57e2c2-ac68-4400-8536-43a09c87045b"
+      [ngStyle]="{ display: loading ? 'none' : '' }"
+      id="iframe"
+      src=""
+      class="iframe"
       title="W3Schools Free Online Web Tutorials"
     ></iframe>
   </ng-container>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, Renderer2 } from "@angular/core";
 import {
   AngularFireStorage,
   AngularFireUploadTask,
@@ -7,7 +7,6 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import { Observable } from "rxjs";
 import { finalize, tap } from "rxjs/operators";
 import { NzImageService } from "ng-zorro-antd/image";
-
 @Component({
   selector: "upload-task",
   templateUrl: "./upload-task.component.html",
@@ -18,16 +17,19 @@ export class UploadTaskComponent implements OnInit {
   @Input() length: number;
   fileCheck: File[] = [];
   task: AngularFireUploadTask; // this does the uploading for us
-
+  public loading: Boolean = true;
+  public cancel = null;
   percentage: Observable<number>;
   snapshot: Observable<any>;
   downloadURL: string;
   public isVisible = false;
   public check = 0;
+  public src: any;
   constructor(
     private storage: AngularFireStorage,
     private db: AngularFirestore,
-    private nzImageService: NzImageService
+    private nzImageService: NzImageService,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit(): void {
@@ -77,30 +79,27 @@ export class UploadTaskComponent implements OnInit {
     );
   }
 
-  showModal(): void {
+  showModal(link): void {
     this.isVisible = true;
+    this.src = link;
+    setTimeout(() => {
+      let iframe = document.getElementById("iframe");
+      this.renderer.setProperty(iframe, "src", link);
+      this.loading = false;
+      this.src = link;
+    }, 500);
   }
 
-  handleOk(): void {
-    console.log("Button ok clicked!");
-    this.isVisible = false;
-  }
+  // handleOk(): void {
+  //   console.log("Button ok clicked!");
+  //   this.isVisible = false;
+  //   this.src = "";
+  // }
 
   handleCancel(): void {
     console.log("Button cancel clicked!");
     this.isVisible = false;
-  }
-
-  onClick(downloadURL): void {
-    console.log("The value of downloadUrl", downloadURL);
-    const images = [
-      {
-        src: downloadURL,
-        width: "200px",
-        height: "200px",
-        alt: "ng-zorro",
-      },
-    ];
-    this.nzImageService.preview(images, { nzZoom: 1.5, nzRotate: 0 });
+    this.loading = true;
+    this.src = "";
   }
 }
