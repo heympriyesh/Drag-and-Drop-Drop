@@ -122,9 +122,6 @@ export class UploadManagerComponent implements OnInit {
           `Please upload only  ${this.fileType} file type.`
         );
       }
-      // console.log("file ext", files.item(i).name.split(".").pop());
-      //   this.fileCheck.push(files.item(i));
-      // this.files.push(files.item(i));
     }
   }
 }

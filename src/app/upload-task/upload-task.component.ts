@@ -79,20 +79,36 @@ export class UploadTaskComponent implements OnInit {
     );
   }
 
-  showModal(link): void {
-    this.isVisible = true;
-    this.src = link;
-    setTimeout(() => {
-      let iframe = document.getElementById("iframe");
-      this.renderer.setProperty(iframe, "src", link);
-      this.loading = false;
+  showModal(link, type?) {
+    if (type == "image/jpeg" || type == "image/png" || type == "image/jpg") {
+      this.previewImage(link);
+    } else {
+      this.isVisible = true;
       this.src = link;
-    }, 500);
+      setTimeout(() => {
+        let iframe = document.getElementById("iframe");
+        this.renderer.setProperty(iframe, "src", link);
+        this.loading = false;
+        this.src = link;
+      }, 1000);
+    }
   }
 
   handleCancel(): void {
     this.isVisible = false;
     this.loading = true;
     this.src = "";
+  }
+
+  previewImage(downloadURL): void {
+    const images = [
+      {
+        src: downloadURL,
+        width: "500px",
+        height: "500px",
+        alt: "ng-zorro",
+      },
+    ];
+    this.nzImageService.preview(images, { nzZoom: 1.5, nzRotate: 0 });
   }
 }
