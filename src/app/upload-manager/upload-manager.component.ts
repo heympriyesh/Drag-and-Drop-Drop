@@ -107,14 +107,6 @@ export class UploadManagerComponent implements OnInit {
         ) {
           this.files.push(files.item(i));
         } else {
-          // console.log(
-          //   'the value of small',
-          //   small,
-          //   large,
-          //   large * this.bytetomb,
-          //   size >= small * this.bytetomb,
-          //   size <= this.bytetomb * large
-          // );
           this.createMessage(
             'error',
             `File must me between size ${this.value[0]}mb to ${this.value[1]}mb.`
@@ -122,7 +114,9 @@ export class UploadManagerComponent implements OnInit {
         }
       } else {
         this.inputField.nativeElement.value = '';
+
         if (this.fileType.length == 0) {
+          this.disableButton = true;
           this.createMessage(
             'error',
             `Please Select a file type before uploading...!`

@@ -47,6 +47,7 @@
         <h2 class="message" nz-typography>
           Move the slider to choose file size
         </h2>
+
         <nz-slider
           nzRange
           [nzStep]="10"
@@ -54,6 +55,9 @@
           (ngModelChange)="onChange($event)"
           (nzOnAfterChange)="onAfterChange($event)"
         ></nz-slider>
+        <strong style="color: crimson"
+          >Upload Files between {{ value[0] }}mb to {{ value[1] }}mb</strong
+        >
       </div>
     </div>
   </div>
