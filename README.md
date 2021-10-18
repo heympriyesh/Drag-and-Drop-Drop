@@ -1,8 +1,5 @@
 # Building a drag-and-drop file uploader app for Angular 11 and Firebase
 
-## Project Url: https://app-drag-and-drop.web.app/home
-
-## Project Url: https://app-drag-and-drop.web.app/home
 
 # Feature
 
