@@ -1,47 +1,134 @@
-<div
-  class="dropzone"
-  dropzone
-  (hovered)="toggleHover($event)"
-  (dropped)="onDrop($event)"
-  [class.hovering]="isHovering"
->
-  <h3>Drag & Drop files here</h3>
+<div nz-row>
+  <div
+    class="dropzone"
+    dropzone
+    (hovered)="toggleHover($event)"
+    (dropped)="onDrop($event)"
+    [class.hovering]="isHovering"
+    nz-col
+    nzSpan="12"
+  >
+    <h3>Drag & Drop files here</h3>
 
-  <div>
-    <label>
-      <input type="file" (change)="onDrop($event.target.files)" />
-    </label>
+    <div>
+      <label>
+        <input
+          type="file"
+          (change)="onDrop($event.target.files)"
+          multiple="multiple"
+          #inputField
+        />
+      </label>
+    </div>
+  </div>
+  <div nz-col nzSpan="12" class="second-div">
+    <div nz-row>
+      <div nz-col nzSpan="12" nzOffset="6">
+        <h2 nz-typography class="message">Select File Type</h2>
+        <nz-checkbox-wrapper style="width: 100%" (nzOnChange)="log($event)">
+          <div nz-row>
+            <div nz-col nzSpan="8">
+              <label nz-checkbox nzValue="jpg">Jpg</label>
+            </div>
+            <div nz-col nzSpan="8">
+              <label nz-checkbox nzValue="png">Png</label>
+            </div>
+            <div nz-col nzSpan="8">
+              <label nz-checkbox nzValue="jpeg">Jpeg</label>
+            </div>
+            <div nz-col nzSpan="8">
+              <label nz-checkbox nzValue="xlsx">Excel</label>
+            </div>
+            <div nz-col nzSpan="8">
+              <label nz-checkbox nzValue="pdf">Pdf</label>
+            </div>
+          </div>
+        </nz-checkbox-wrapper>
+        <h2 class="message" nz-typography>
+          Move the slider to choose file size
+        </h2>
+        <nz-slider
+          nzRange
+          [nzStep]="10"
+          [(ngModel)]="rangeValue"
+          (ngModelChange)="onChange($event)"
+          (nzOnAfterChange)="onAfterChange($event)"
+        ></nz-slider>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="files.length > 0">
+    <!-- *ngFor="let files of files; index as i" -->
+    <div>
+      <nz-modal
+        [(nzVisible)]="isVisible"
+        nzTitle="Preivew File"
+        [nzStyle]="{ top: '20px' }"
+        [ngStyle]="{ height: '600px' }"
+        (nzOnCancel)="handleCancel()"
+        nzOkText="Start Uploading"
+        (nzOnOk)="modalUploading()"
+        nzMaskClosable="true"
+        nzWidth="600"
+      >
+        <!-- [nzFooter]="labelValue" -->
+        <ng-container *nzModalContent>
+          <nz-table [nzData]="files" *ngIf="files" nzShowPagination="false">
+            <thead>
+              <tr>
+                <th>S.no</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let data of files; index as i">
+              <tr>
+                <td>{{ i + 1 }}</td>
+                <td>{{ data.name }}</td>
+                <td>{{ data.type }}</td>
+                <td>{{ data.size }}</td>
+                <td>
+                  <button nz-button nzType="danger" (click)="removeFile(i)">
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </ng-container>
+      </nz-modal>
+    </div>
   </div>
 </div>
-<h2 nz-typography class="message">Select File Type</h2>
-<nz-checkbox-wrapper style="width: 100%" (nzOnChange)="log($event)">
-  <div nz-row>
-    <div nz-col nzSpan="8">
-      <label nz-checkbox nzValue="jpg" [ngModel]="true">Jpg</label>
-    </div>
-    <div nz-col nzSpan="8"><label nz-checkbox nzValue="png">Png</label></div>
-    <div nz-col nzSpan="8">
-      <label nz-checkbox nzValue="jpeg">Jpeg</label>
-    </div>
-    <div nz-col nzSpan="8">
-      <label nz-checkbox nzValue="xlsx">Excel</label>
-    </div>
-    <div nz-col nzSpan="8"><label nz-checkbox nzValue="pdf">Pdf</label></div>
+<div nz-row>
+  <div nz-col nzSpan="12" class="checkFiles">
+    <button
+      nz-button
+      nzType="danger"
+      (click)="showModal()"
+      [disabled]="disableButton"
+    >
+      Check Files
+    </button>
   </div>
-</nz-checkbox-wrapper>
-<h2 class="message" nz-typography>Move the slider to choose file size</h2>
-<nz-slider
-  nzRange
-  [nzStep]="10"
-  [(ngModel)]="rangeValue"
-  (ngModelChange)="onChange($event)"
-  (nzOnAfterChange)="onAfterChange($event)"
-></nz-slider>
+  <div nz-col nzSpan="12" class="startUpload">
+    <button
+      nz-button
+      nzType="primary"
+      [nzLoading]="buttonLoading"
+      (click)="startUploading()"
+      [disabled]="disableButton"
+    >
+      Start Uploading
+    </button>
+  </div>
+</div>
 
-<div *ngIf="files.length > 0">
-  Uploads
-  <div *ngFor="let files of files; index as i">
+<div *ngIf="uploadStart">
+  <div *ngFor="let files of FileUploadList; index as i">
     <upload-task [file]="files" [length]="i"></upload-task>
   </div>
-  <hr />
 </div>

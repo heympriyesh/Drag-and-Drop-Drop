@@ -29,7 +29,7 @@
         <td>
           <nz-progress
             *ngIf="percentage | async as pct"
-            [nzPercent]="pct"
+            [nzPercent]="pct | json | number: '1.0-0'"
             nzType="circle"
             [nzWidth]="80"
           ></nz-progress>

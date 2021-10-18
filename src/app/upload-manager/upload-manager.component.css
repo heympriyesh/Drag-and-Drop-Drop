@@ -20,3 +20,20 @@
   color: #f5051b;
   margin-top: 2px;
 }
+
+.second-div {
+  border: 10px solid #f5051b;
+  border-radius: 15px;
+}
+.checkFiles {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+  padding-left: 20px;
+}
+.startUpload {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 2px;
+  padding-left: 20px;
+}

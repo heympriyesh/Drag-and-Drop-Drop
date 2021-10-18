@@ -1,18 +1,24 @@
-import { Component, OnInit, Renderer2 } from "@angular/core";
-import { NzMessageService } from "ng-zorro-antd/message";
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import {
   FormGroup,
   FormBuilder,
   FormControl,
   Validators,
-} from "@angular/forms";
-import { AngularFirestore } from "@angular/fire/firestore";
-import { Observable } from "rxjs";
+} from '@angular/forms';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 @Component({
-  selector: "upload-manager",
-  templateUrl: "./upload-manager.component.html",
-  styleUrls: ["./upload-manager.component.css"],
+  selector: 'upload-manager',
+  templateUrl: './upload-manager.component.html',
+  styleUrls: ['./upload-manager.component.css'],
 })
 export class UploadManagerComponent implements OnInit {
   public aufgaben: Observable<any>[];
@@ -20,35 +26,30 @@ export class UploadManagerComponent implements OnInit {
   isHovering: boolean;
   files: File[] = [];
   form: FormGroup;
-  public fileType = ["jpg"];
+  public fileType = [];
   public value: any;
   public bytetomb: number = 1048576;
   public len: number = 1;
   public visible = false;
+  public FileUploadList: any;
+  public checkFile: File[] = [];
+  public isVisible: Boolean = false;
+  public buttonLoading: Boolean = false;
+  public uploadStart: Boolean = false;
+  public disableButton: Boolean = true;
   constructor(
     private message: NzMessageService,
     private fb: FormBuilder,
     private ren: Renderer2,
     public fireservices: AngularFirestore
   ) {}
-  FileUploadList;
+  @ViewChild('inputField') inputField: ElementRef;
+
   ngOnInit(): void {
-    this.fireservices
-      .collection("files")
-      .snapshotChanges()
-      .subscribe((data: any) => {
-        this.FileUploadList = data.map((e) => {
-          return {
-            id: e.payload.doc.id,
-            downloadURL: e.payload.doc.data()["downloadURL"],
-            name: e.payload.doc.data()["originalName"],
-          };
-        });
-        // console.log("Val", this.employee);
-      });
     this.value = this.rangeValue;
     this.setForm();
   }
+
   setForm() {
     this.form = this.fb.group({
       checkOptionsOne: [this.checkOptionsOne],
@@ -57,10 +58,10 @@ export class UploadManagerComponent implements OnInit {
   }
 
   checkOptionsOne = [
-    { label: "JPG", value: "jpg", checked: true },
-    { label: "PNG", value: "png" },
-    { label: "PDF", value: "pdf" },
-    { lable: "EXCEL", value: "xlsx" },
+    { label: 'JPG', value: 'jpg' },
+    { label: 'PNG', value: 'png' },
+    { label: 'PDF', value: 'pdf' },
+    { lable: 'EXCEL', value: 'xlsx' },
   ];
   public rangeValue = [0, 10];
 
@@ -81,7 +82,7 @@ export class UploadManagerComponent implements OnInit {
   log(detail) {
     this.fileType = [];
     this.fileType = [...detail];
-    console.log("detail", this.fileType);
+    console.log('detail', this.fileType);
   }
 
   createMessage(type: string, message: any): void {
@@ -89,12 +90,15 @@ export class UploadManagerComponent implements OnInit {
   }
 
   onDrop(files: FileList) {
-    console.log("The files details on drop", files, this.value);
+    console.log('The files details on drop', files, this.value);
+    this.uploadStart = false;
+    this.disableButton = false;
     let small = this.value[0];
     let large = this.value[1];
-    console.log("small", small, "large", large);
+    console.log('small', small, 'large', large);
     for (let i = 0; i < files.length; i++) {
-      let prop = files.item(i).name.split(".").pop();
+      console.log('this.files.item', files.item(i));
+      let prop = files.item(i).name.split('.').pop();
       let size = files.item(i).size;
       if (this.fileType.includes(prop)) {
         if (
@@ -104,7 +108,7 @@ export class UploadManagerComponent implements OnInit {
           this.files.push(files.item(i));
         } else {
           console.log(
-            "the value of small",
+            'the value of small',
             small,
             large,
             large * this.bytetomb,
@@ -112,16 +116,70 @@ export class UploadManagerComponent implements OnInit {
             size <= this.bytetomb * large
           );
           this.createMessage(
-            "error",
+            'error',
             `File must me between size ${this.value[0]}mb to ${this.value[1]}mb.`
           );
         }
       } else {
-        this.createMessage(
-          "error",
-          `Please upload only  ${this.fileType} file type.`
-        );
+        this.inputField.nativeElement.value = '';
+        if (this.fileType.length == 0) {
+          this.createMessage(
+            'error',
+            `Please Select a file type before uploading...!`
+          );
+        } else {
+          this.createMessage(
+            'error',
+            `Please upload only  ${this.fileType} file type.`
+          );
+        }
       }
     }
+  }
+
+  showModal() {
+    this.isVisible = true;
+  }
+
+  handleCancel(): void {
+    this.isVisible = false;
+  }
+
+  removeFile(index) {
+    this.files = this.files.filter((data, i) => {
+      if (i != index) {
+        return data;
+      }
+    });
+    this.FileUploadList = [...this.files];
+    if (this.files.length == 0) {
+      this.inputField.nativeElement.value = '';
+      this.isVisible = false;
+      this.disableButton = true;
+    }
+  }
+
+  startUploading() {
+    this.buttonLoading = true;
+    this.isVisible = false;
+    this.FileUploadList = [...this.files];
+    setTimeout(() => {
+      this.buttonLoading = false;
+      this.uploadStart = true;
+      this.disableButton = true;
+      this.inputField.nativeElement.value = '';
+      this.files = [];
+    }, 1000);
+  }
+
+  modalUploading() {
+    this.FileUploadList = [...this.files];
+    this.isVisible = false;
+    this.uploadStart = true;
+    this.disableButton = true;
+    this.inputField.nativeElement.value = '';
+    setTimeout(() => {
+      this.files = [];
+    }, 1000);
   }
 }

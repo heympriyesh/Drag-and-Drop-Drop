@@ -30,9 +30,12 @@ export class UploadTaskComponent implements OnInit {
     private db: AngularFirestore,
     private nzImageService: NzImageService,
     private renderer: Renderer2
-  ) {}
+  ) {
+    console.log("constructor...");
+  }
 
   ngOnInit(): void {
+    console.log("calliing");
     this.startUpload();
     this.check++;
   }
