@@ -90,14 +90,14 @@ export class UploadManagerComponent implements OnInit {
   }
 
   onDrop(files: FileList) {
-    console.log('The files details on drop', files, this.value);
+    // console.log('The files details on drop', files, this.value);
     this.uploadStart = false;
     this.disableButton = false;
     let small = this.value[0];
     let large = this.value[1];
-    console.log('small', small, 'large', large);
+    // console.log('small', small, 'large', large);
     for (let i = 0; i < files.length; i++) {
-      console.log('this.files.item', files.item(i));
+      // console.log('this.files.item', files.item(i));
       let prop = files.item(i).name.split('.').pop();
       let size = files.item(i).size;
       if (this.fileType.includes(prop)) {
@@ -107,14 +107,14 @@ export class UploadManagerComponent implements OnInit {
         ) {
           this.files.push(files.item(i));
         } else {
-          console.log(
-            'the value of small',
-            small,
-            large,
-            large * this.bytetomb,
-            size >= small * this.bytetomb,
-            size <= this.bytetomb * large
-          );
+          // console.log(
+          //   'the value of small',
+          //   small,
+          //   large,
+          //   large * this.bytetomb,
+          //   size >= small * this.bytetomb,
+          //   size <= this.bytetomb * large
+          // );
           this.createMessage(
             'error',
             `File must me between size ${this.value[0]}mb to ${this.value[1]}mb.`
